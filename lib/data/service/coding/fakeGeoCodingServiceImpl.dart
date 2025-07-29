@@ -1,7 +1,7 @@
 import 'package:reunite/ui/features/missingMap/models/model.dart';
 import 'package:reunite/data/service/coding/GeocodingService.dart';
 
-class FakeGeoGeoCodingServiceImpl implements GeoCodingService {
+class FakeGeoCodingServiceImpl implements GeoCodingService {
   @override
   Future<Coordinate> getCoordinateFromAddress(String address) async {
     return Coordinate(lat: 37.5665851, long: 126.97820379999999);
