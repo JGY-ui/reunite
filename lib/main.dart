@@ -52,10 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   Future<void> _incrementCounter() async {
-    final Fakerepository = FakeLocationRepositoryImpl(
-      locatorService: FakeLocaterServiceImpl(),
-      codingService: FakeGeoCodingServiceImpl(),
-    );
+    final Fakerepository = FakeLocationRepositoryImpl();
 
     final repository = LocationRepositoryImpl(
       locatorService: LocaterServiceImpl(),
