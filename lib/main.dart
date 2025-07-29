@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
+import 'package:reunite/data/service/coding/fakeGeoCodingServiceImpl.dart';
+import 'package:reunite/data/service/coding/geocodingServiceImpl.dart';
 import 'package:reunite/permission/permission.dart';
 
 void main() {
@@ -43,7 +45,19 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
-  void _incrementCounter() {
+  Future<void> _incrementCounter() async {
+    var geoCodingService = FakeGeoGeoCodingServiceImpl();
+    var coordinateFromAddress =
+        await geoCodingService.getCoordinateFromAddress('');
+
+    var geoCodingService_real_data = GeoCodingServiceImpl();
+    var coordinateFromAddress_real_data =
+        await geoCodingService.getCoordinateFromAddress('서울특별시 중구 세종대로 110');
+
+    // 주소 변환 테스트 코드
+    print(
+        'coordinateFromAddress : ${coordinateFromAddress.lat} / coordinateFromAddress_real_data : ${coordinateFromAddress_real_data.lat}');
+
     setState(() {
       _counter++;
     });
