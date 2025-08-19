@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:reunite/data/service/missingPersons/fakeMissingPersonListServiceImpl.dart';
 import 'package:reunite/data/service/missingPersons/missingPersonListServiceImpl.dart';
 import 'package:reunite/ui/features/missingMap/models/coordinate.dart';
 import 'package:reunite/ui/features/missingMap/viewModel/mapViewModel.dart';
@@ -52,6 +53,7 @@ class Mapview extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
+            ////////////////////////////////////////////////////////////////////
             MissingPersonsServiceImpl missingPersonsService =
                 MissingPersonsServiceImpl();
 
@@ -61,6 +63,20 @@ class Mapview extends StatelessWidget {
             );
 
             print('missingPersonsList: ${missingPersonsList[0].nm}');
+
+            ////////////////////////////////////////////////////////////////////
+
+            FakeMissingPersonsServiceImpl fakeMissingPersonsService =
+                FakeMissingPersonsServiceImpl();
+
+            var fakeMissingPersonsList =
+                await fakeMissingPersonsService.loadMissingPersons(
+              address: "",
+            );
+
+            print('fake missingPersonsList: ${fakeMissingPersonsList[0].nm}');
+
+            ////////////////////////////////////////////////////////////////////
 
             print(
                 'initialCameraPosition 1111 : ${viewModel.initialCameraPosition}');
