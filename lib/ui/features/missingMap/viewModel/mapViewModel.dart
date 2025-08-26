@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:reunite/data/repository/location/locationRepositoryImpl.dart';
 import 'package:reunite/data/service/coding/geocodingServiceImpl.dart';
 import 'package:reunite/data/service/locater/locaterServiceimpl.dart';
+import 'package:reunite/data/service/missingPersons/fakeMissingPersonListServiceImpl.dart';
 import 'package:reunite/ui/features/missingMap/models/model.dart';
 
 enum MapViewmodelState {
