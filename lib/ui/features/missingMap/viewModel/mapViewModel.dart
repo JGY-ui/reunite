@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:reunite/data/repository/location/locationRepositoryImpl.dart';
 import 'package:reunite/data/service/coding/geocodingServiceImpl.dart';
 import 'package:reunite/data/service/locater/locaterServiceimpl.dart';
+import 'package:reunite/data/service/missingPersons/fakeMissingPersonListServiceImpl.dart';
 import 'package:reunite/ui/features/missingMap/models/model.dart';
 
 enum MapViewmodelState {
@@ -31,6 +32,8 @@ class MapViewModel extends ChangeNotifier {
   String myCurrentLocationToString = "";
 
   Coordinate? currentCameraCoordinate;
+
+  List<MissingPerson> fakeMissingPersonsList = [];
 
   // List<MissingPerson> missingPersonList;
   late Map<int, Coordinate> missingPersonCoordinates;
@@ -63,9 +66,17 @@ class MapViewModel extends ChangeNotifier {
   }
 
   // 주소를 바탕으로 실종자 목록을 불러온다
-  _loadMissingPersons(String address) {
+  _loadMissingPersons(String address) async {
     // 주소로부터 좌표를 가져와서 해당 좌표를 중심으로 실종자 목록을 불러온다
     // 좌표를 중심으로 실종자 목록을 불러온다
+
+    // 실종자 명단 호출
+    FakeMissingPersonsServiceImpl fakeMissingPersonsService =
+        FakeMissingPersonsServiceImpl();
+
+    fakeMissingPersonsList = await fakeMissingPersonsService.loadMissingPersons(
+      address: address,
+    );
   }
 
   // 현재 위치를 가져온다
@@ -92,7 +103,29 @@ class MapViewModel extends ChangeNotifier {
     // 현재 주소를 바탕으로 실종자 목록을 불러온다
     _loadMissingPersons(myCurrentLocationToString);
 
+    List<LatLng> missingPersonLatLngList = [];
+
     markers.clear();
+
+    for (MissingPerson person in fakeMissingPersonsList) {
+      if (person.occrAdres != null && person.occrAdres!.isNotEmpty) {
+        LatLng? position = await _getCoordinateFromAddress(person.occrAdres!);
+        if (position != null) {
+          print('# position : $position');
+
+          missingPersonLatLngList.add(position);
+
+          markers.add(
+            Marker(
+              markerId: MarkerId('${person.nm ?? '실종자'}'),
+              position: position,
+              infoWindow: InfoWindow(title: '${person.nm ?? '실종자'}'),
+            ),
+          );
+        }
+      }
+    }
+
     markers.add(
       Marker(
         markerId: MarkerId('currentCameraCoordinate_location'),
@@ -110,14 +143,27 @@ class MapViewModel extends ChangeNotifier {
       ),
     );
 
+// fakeMissingPersonsList
+
+    markers.add(
+      Marker(
+        markerId: MarkerId('myCurrentLocation_location'),
+        position: LatLng(myCurrentLocation!.lat, myCurrentLocation!.long),
+        infoWindow: InfoWindow(title: 'myCurrentLocation Location'),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan),
+      ),
+    );
+
     notifyListeners();
   }
 
   // 주소를 바탕으로 좌표를 가져온다
-  void _getCoordinateFromAddress(String address) {
-    repository.getCoordinateFromAddress(address).then((coordinate) {
-      print('Coordinate from Address: ${coordinate.lat}, ${coordinate.long}');
-    });
+  Future<LatLng> _getCoordinateFromAddress(String address) async {
+    print('# address : $address');
+    Coordinate coordinate = await repository.getCoordinateFromAddress(address);
+    print('# address : ${coordinate.lat}, ${coordinate.long}');
+
+    return LatLng(coordinate.lat, coordinate.long);
   }
 
   // 좌표를 바탕으로 주소를 가져온다
