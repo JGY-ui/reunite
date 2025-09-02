@@ -69,20 +69,19 @@ class MapViewModel extends ChangeNotifier {
         zoom: 14.4746,
       );
       // 페이크 실종자 명단 호출
-      // FakeMissingPersonsServiceImpl fakeMissingPersonsService =
-      //     FakeMissingPersonsServiceImpl();
-      // missingPersonsList =
-      //     await fakeMissingPersonsService.loadMissingPersons(
-      //   address: address,
-      // );
-
-      // 실제 실종자 명단 호출
-      MissingPersonsServiceImpl missingPersonsService =
-          MissingPersonsServiceImpl();
-
-      missingPersonsList = await missingPersonsService.loadMissingPersons(
+      FakeMissingPersonsServiceImpl fakeMissingPersonsService =
+          FakeMissingPersonsServiceImpl();
+      missingPersonsList = await fakeMissingPersonsService.loadMissingPersons(
         address: address,
       );
+
+      // 실제 실종자 명단 호출
+      // MissingPersonsServiceImpl missingPersonsService =
+      //     MissingPersonsServiceImpl();
+
+      // missingPersonsList = await missingPersonsService.loadMissingPersons(
+      //   address: address,
+      // );
 
       print("# missingPersonsList : $missingPersonsList");
 
