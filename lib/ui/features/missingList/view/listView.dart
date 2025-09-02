@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:reunite/ui/features/missingMap/models/model.dart';
 
 class MissingpersonsList extends StatelessWidget {
   final ScrollController scrollController;
   final bool show;
-  final List<String> items;
+  final List<MissingPerson> items;
   MissingpersonsList(this.scrollController, this.show, this.items, {super.key});
 
   @override
@@ -24,8 +25,14 @@ class MissingpersonsList extends StatelessWidget {
         itemBuilder: (context, index) {
           return ListTile(
             leading: CircleAvatar(child: Text('${index + 1}')),
-            title: Text('아이템 #$index'),
-            subtitle: const Text('설명 텍스트'),
+            title: Text('${items[index].nm}'),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('발생지역: ${items[index].occrAdres ?? '정보 없음'}'),
+                Text('발생일자: ${items[index].occrde ?? '정보 없음'}'),
+              ],
+            ),
           );
         },
       ),

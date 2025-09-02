@@ -73,13 +73,6 @@ class Mapview extends StatelessWidget {
                     } else {
                       viewModel.setisDraggable(false);
                     }
-
-                    print(
-                        '## scrollController.position.viewportDimension : ${scrollController.position.viewportDimension}');
-                    print(
-                        '## scrollController.position.maxScrollExtent : ${scrollController.position.maxScrollExtent}');
-                    print(
-                        '## scrollController.position : ${scrollController.position.viewportDimension >= scrollController.position.maxScrollExtent}');
                   });
                 }
 
@@ -96,19 +89,8 @@ class Mapview extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: MissingpersonsList(
-                      scrollController, viewModel.isDraggable, [
-                    'test',
-                    'test2',
-                    'test3',
-                    'test4',
-                    'test5',
-                    'test6',
-                    'test7',
-                    'test8',
-                    'test9',
-                    'test10'
-                  ]),
+                  child: MissingpersonsList(scrollController,
+                      viewModel.isDraggable, viewModel.fakeMissingPersonsList),
                 );
               },
             ),

@@ -34,6 +34,7 @@ class MapViewModel extends ChangeNotifier {
 
   // 주소 변수
   String address = "";
+  List<MissingPerson> fakeMissingPersonsList = [];
   // 현재 위치 변수
   Coordinate? myCurrentLocation;
   // 현재 주소 변수
@@ -65,6 +66,13 @@ class MapViewModel extends ChangeNotifier {
             myCurrentLocation?.long ?? 126.9780),
         zoom: 14.4746,
       );
+      // 실종자 명단 호출
+      FakeMissingPersonsServiceImpl fakeMissingPersonsService =
+          FakeMissingPersonsServiceImpl();
+      fakeMissingPersonsList =
+          await fakeMissingPersonsService.loadMissingPersons(
+        address: address,
+      );
       // 상태 갱신
       state = MapViewmodelState.loaded;
       notifyListeners();
@@ -72,9 +80,21 @@ class MapViewModel extends ChangeNotifier {
   }
 
   // 주소를 바탕으로 실종자 목록을 불러온다
-  _loadMissingPersons(String address) {
+  _loadMissingPersons(String address) async {
     // 주소로부터 좌표를 가져와서 해당 좌표를 중심으로 실종자 목록을 불러온다
     // 좌표를 중심으로 실종자 목록을 불러온다
+    List<LatLng> missingPersonLatLngList = [];
+
+    for (MissingPerson person in fakeMissingPersonsList) {
+      if (person.occrAdres != null && person.occrAdres!.isNotEmpty) {
+        LatLng? position = await _getCoordinateFromAddress(person.occrAdres!);
+        if (position != null) {
+          print('# position : $position');
+
+          missingPersonLatLngList.add(position);
+        }
+      }
+    }
   }
 
   // 현재 위치를 가져온다
@@ -123,10 +143,12 @@ class MapViewModel extends ChangeNotifier {
   }
 
   // 주소를 바탕으로 좌표를 가져온다
-  void _getCoordinateFromAddress(String address) {
-    repository.getCoordinateFromAddress(address).then((coordinate) {
-      print('Coordinate from Address: ${coordinate.lat}, ${coordinate.long}');
-    });
+  Future<LatLng> _getCoordinateFromAddress(String address) async {
+    print('# address : $address');
+    Coordinate coordinate = await repository.getCoordinateFromAddress(address);
+    print('# address : ${coordinate.lat}, ${coordinate.long}');
+
+    return LatLng(coordinate.lat, coordinate.long);
   }
 
   // 좌표를 바탕으로 주소를 가져온다
