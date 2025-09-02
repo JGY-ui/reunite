@@ -9,6 +9,9 @@ class MissingpersonsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(
+        '# MissingpersonsList build with ${items.length} / items.isEmpty : ${items.isEmpty} / show : $show');
+
     if (items.isEmpty) {
       return Center(
         child: Text(

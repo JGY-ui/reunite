@@ -4,6 +4,7 @@ import 'package:reunite/data/repository/location/locationRepositoryImpl.dart';
 import 'package:reunite/data/service/coding/geocodingServiceImpl.dart';
 import 'package:reunite/data/service/locater/locaterServiceimpl.dart';
 import 'package:reunite/data/service/missingPersons/fakeMissingPersonListServiceImpl.dart';
+import 'package:reunite/data/service/missingPersons/missingPersonListServiceImpl.dart';
 import 'package:reunite/ui/features/missingMap/models/model.dart';
 
 enum MapViewmodelState {
@@ -18,6 +19,7 @@ class MapViewModel extends ChangeNotifier {
 
   setisDraggable(bool value) {
     isDraggable = value;
+    print('# isDraggable : $isDraggable');
     notifyListeners();
   }
 
@@ -34,7 +36,7 @@ class MapViewModel extends ChangeNotifier {
 
   // 주소 변수
   String address = "";
-  List<MissingPerson> fakeMissingPersonsList = [];
+  List<MissingPerson> missingPersonsList = [];
   // 현재 위치 변수
   Coordinate? myCurrentLocation;
   // 현재 주소 변수
@@ -66,13 +68,24 @@ class MapViewModel extends ChangeNotifier {
             myCurrentLocation?.long ?? 126.9780),
         zoom: 14.4746,
       );
-      // 실종자 명단 호출
-      FakeMissingPersonsServiceImpl fakeMissingPersonsService =
-          FakeMissingPersonsServiceImpl();
-      fakeMissingPersonsList =
-          await fakeMissingPersonsService.loadMissingPersons(
+      // 페이크 실종자 명단 호출
+      // FakeMissingPersonsServiceImpl fakeMissingPersonsService =
+      //     FakeMissingPersonsServiceImpl();
+      // missingPersonsList =
+      //     await fakeMissingPersonsService.loadMissingPersons(
+      //   address: address,
+      // );
+
+      // 실제 실종자 명단 호출
+      MissingPersonsServiceImpl missingPersonsService =
+          MissingPersonsServiceImpl();
+
+      missingPersonsList = await missingPersonsService.loadMissingPersons(
         address: address,
       );
+
+      print("# missingPersonsList : $missingPersonsList");
+
       // 상태 갱신
       state = MapViewmodelState.loaded;
       notifyListeners();
@@ -85,7 +98,7 @@ class MapViewModel extends ChangeNotifier {
     // 좌표를 중심으로 실종자 목록을 불러온다
     List<LatLng> missingPersonLatLngList = [];
 
-    for (MissingPerson person in fakeMissingPersonsList) {
+    for (MissingPerson person in missingPersonsList) {
       if (person.occrAdres != null && person.occrAdres!.isNotEmpty) {
         LatLng? position = await _getCoordinateFromAddress(person.occrAdres!);
         if (position != null) {

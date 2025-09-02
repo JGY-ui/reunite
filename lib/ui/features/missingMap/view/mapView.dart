@@ -63,10 +63,11 @@ class Mapview extends StatelessWidget {
               snap: true, // 스냅 활성화
               snapSizes: const [0.1, 0.8], // 20% 또는 50%에서만 멈춤
               builder: (context, scrollController) {
+                final sheetMaxHeight = MediaQuery.of(context).size.height * 0.5;
                 if (scrollController.hasClients) {
                   scrollController.position.isScrollingNotifier.addListener(() {
                     final isMax = scrollController.position.viewportDimension >=
-                        scrollController.position.maxScrollExtent;
+                        sheetMaxHeight;
 
                     if (isMax) {
                       viewModel.setisDraggable(true);
@@ -90,7 +91,7 @@ class Mapview extends StatelessWidget {
                     ],
                   ),
                   child: MissingpersonsList(scrollController,
-                      viewModel.isDraggable, viewModel.fakeMissingPersonsList),
+                      viewModel.isDraggable, viewModel.missingPersonsList),
                 );
               },
             ),
