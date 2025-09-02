@@ -61,21 +61,26 @@ class Mapview extends StatelessWidget {
               snap: true, // 스냅 활성화
               snapSizes: const [0.1, 0.8], // 20% 또는 50%에서만 멈춤
               builder: (context, scrollController) {
-                // if (scrollController.hasClients) {
-                //   scrollController.position.isScrollingNotifier.addListener(() {
-                //     print(
-                //         'scrollController.position.viewportDimension : ${scrollController.position.viewportDimension}');
-                //     print(
-                //         'scrollController.position.maxScrollExtent : ${scrollController.position.extentTotal * 0.8}');
-                //     print(
-                //         'scrollController.position : ${scrollController.position.viewportDimension >= scrollController.position.maxScrollExtent}');
-                //     if (scrollController.position.isScrollingNotifier.value) {
-                //       print('Scrolling started');
-                //     } else {
-                //       print('Scrolling ended');
-                //     }
-                //   });
-                // }
+                if (scrollController.hasClients) {
+                  scrollController.position.isScrollingNotifier.addListener(() {
+                    final isMax = scrollController.position.viewportDimension >=
+                        scrollController.position.maxScrollExtent;
+
+                    if (isMax) {
+                      viewModel.setisDraggable(true);
+                    } else {
+                      viewModel.setisDraggable(false);
+                    }
+
+                    print(
+                        '## scrollController.position.viewportDimension : ${scrollController.position.viewportDimension}');
+                    print(
+                        '## scrollController.position.maxScrollExtent : ${scrollController.position.maxScrollExtent}');
+                    print(
+                        '## scrollController.position : ${scrollController.position.viewportDimension >= scrollController.position.maxScrollExtent}');
+                  });
+                }
+
                 return Container(
                   decoration: const BoxDecoration(
                     color: Colors.white,
@@ -89,7 +94,19 @@ class Mapview extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: MissingpersonsList(scrollController),
+                  child: MissingpersonsList(
+                      scrollController, viewModel.isDraggable, [
+                    'test',
+                    'test2',
+                    'test3',
+                    'test4',
+                    'test5',
+                    'test6',
+                    'test7',
+                    'test8',
+                    'test9',
+                    'test10'
+                  ]),
                 );
               },
             ),

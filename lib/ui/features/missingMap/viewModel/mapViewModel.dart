@@ -13,6 +13,14 @@ enum MapViewmodelState {
 }
 
 class MapViewModel extends ChangeNotifier {
+  // 드래그 가능 여부
+  bool isDraggable = false;
+
+  setisDraggable(bool value) {
+    isDraggable = value;
+    notifyListeners();
+  }
+
   // 레파지토리 설정
   final repository = LocationRepositoryImpl(
     locatorService: LocaterServiceImpl(),
