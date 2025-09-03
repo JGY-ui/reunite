@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "334579941442",
+    "project_id": "reunite-54494",
+    "storage_bucket": "reunite-54494.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:334579941442:android:f4ec76a5b010bc0146addb",
+        "android_client_info": {
+          "package_name": "com.example.reunite"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCcgiePyoV0agPBv2aCHWrRG1Q_GCWfK8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

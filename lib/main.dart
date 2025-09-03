@@ -15,14 +15,25 @@ import 'package:reunite/ui/features/missingMap/view/mapView.dart';
 
 import 'ui/features/missingMap/models/model.dart';
 import 'ui/features/missingMap/viewModel/mapViewModel.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+Future<void> main() async {
+  // Google Maps Android에서 Hybrid Composition 모드 사용 설정
   final GoogleMapsFlutterPlatform mapsImplementation =
       GoogleMapsFlutterPlatform.instance;
   if (mapsImplementation is GoogleMapsFlutterAndroid) {
     // Force Hybrid Composition mode.
     mapsImplementation.useAndroidViewSurface = true;
   }
+
+  // Firebase 초기화
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // 프로바이더 설정
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => MapViewModel()),
