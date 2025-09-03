@@ -8,7 +8,7 @@ import 'package:reunite/data/repository/missingPersons/missingPersonRepositoryIm
 import 'package:reunite/data/service/missingPersons/fakeMissingPersonListServiceImpl.dart';
 import 'package:reunite/data/service/missingPersons/missingPersonListServiceImpl.dart';
 import 'package:reunite/data/service/notice/fakeNoticeServiceImpl.dart';
-import 'package:reunite/data/service/notice/noticeRepositoryImpl.dart';
+import 'package:reunite/data/service/notice/noticeServiceImpl.dart';
 import 'package:reunite/ui/features/missingMap/models/coordinate.dart';
 import 'package:reunite/ui/features/missingMap/viewModel/mapViewModel.dart';
 
@@ -57,11 +57,11 @@ class Mapview extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            var noticerepositoryimpl = Noticerepositoryimpl();
+            var noticerepositoryimpl = NoticeServiceImpl();
             var noticData = await noticerepositoryimpl.loadNotice();
             print('## real notice data: ${noticData[0].content}');
 
-            var fakeNoticerepositoryimpl = FakeNoticeserviceimpl();
+            var fakeNoticerepositoryimpl = FakeNoticeServiceImpl();
             var fakeNoticData = await fakeNoticerepositoryimpl.loadNotice();
             print('## fake notice data: ${fakeNoticData[0].content}');
 
