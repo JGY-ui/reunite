@@ -1,7 +1,7 @@
 import 'package:reunite/data/service/notice/noticeService.dart';
 import 'package:reunite/ui/features/missingMap/models/model.dart';
 
-class FakeNoticeserviceimpl implements NoticeService {
+class FakeNoticeServiceImpl implements NoticeService {
   List<Notice> fakeNotices = [
     Notice(
       id: 1,
