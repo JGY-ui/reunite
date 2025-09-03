@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:reunite/data/repository/missingPersons/fakeMissingPersonRepositoryImpl.dart';
 import 'package:reunite/data/repository/missingPersons/missingPersonRepositoryImpl.dart';
+import 'package:reunite/data/repository/notice/noticeRepositoryImpl.dart';
 import 'package:reunite/data/service/missingPersons/fakeMissingPersonListServiceImpl.dart';
 import 'package:reunite/data/service/missingPersons/missingPersonListServiceImpl.dart';
 import 'package:reunite/data/service/notice/fakeNoticeServiceImpl.dart';
@@ -57,13 +58,11 @@ class Mapview extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            var noticerepositoryimpl = NoticeServiceImpl();
-            var noticData = await noticerepositoryimpl.loadNotice();
-            print('## real notice data: ${noticData[0].content}');
-
-            var fakeNoticerepositoryimpl = FakeNoticeServiceImpl();
-            var fakeNoticData = await fakeNoticerepositoryimpl.loadNotice();
-            print('## fake notice data: ${fakeNoticData[0].content}');
+            /// test code for fake notice repository
+            var noticeRepositoryImpl =
+                NoticeRepositoryImpl(service: NoticeServiceImpl());
+            var NoticData = await noticeRepositoryImpl.loadNotice();
+            print('## notice data: ${NoticData[0].content}');
 
             await _controller?.moveCamera(
               CameraUpdate.newCameraPosition(viewModel.initialCameraPosition!),
