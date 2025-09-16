@@ -47,7 +47,7 @@ class MissingpersonsList extends StatelessWidget {
               color: Colors.white,
               child: Center(
                 child: Text(
-                  '목록을 표시할 수 없습니다.',
+                  '위로 올려주세요.',
                   style: Theme.of(context)
                       .textTheme
                       .headlineMedium
