@@ -14,6 +14,7 @@ import 'package:reunite/data/service/notice/noticeServiceImpl.dart';
 import 'package:reunite/ui/features/missingList/view/listView.dart';
 import 'package:reunite/ui/features/missingMap/models/coordinate.dart';
 import 'package:reunite/ui/features/missingMap/viewModel/mapViewModel.dart';
+import 'package:reunite/ui/features/noticeList/view/noticeView.dart';
 
 class Mapview extends StatelessWidget {
   Mapview({super.key});
@@ -39,6 +40,33 @@ class Mapview extends StatelessWidget {
       // return Text('Loaded');
       print('Loaded');
       return Scaffold(
+        appBar: AppBar(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Reunite'),
+              IconButton(
+                  onPressed: () async {
+                    /// test code for fake notice repository
+                    // var noticeRepositoryImpl =
+                    //     NoticeRepositoryImpl(service: NoticeServiceImpl());
+                    // var noticData = await noticeRepositoryImpl.loadNotice();
+                    // print('## notice data: ${noticData[0].content}');
+
+                    var fakeNoticeRepositoryImpl = FakeNoticeRepositoryImpl();
+                    List fakeNoticData =
+                        await fakeNoticeRepositoryImpl.loadNotice();
+                    print('## fake notice data: ${fakeNoticData[0].content}');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NoticeView(fakeNoticData)),
+                    );
+                  },
+                  icon: Icon(Icons.campaign))
+            ],
+          ),
+        ),
         body: Stack(
           children: [
             GoogleMap(
@@ -104,16 +132,6 @@ class Mapview extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            /// test code for fake notice repository
-            var noticeRepositoryImpl =
-                NoticeRepositoryImpl(service: NoticeServiceImpl());
-            var noticData = await noticeRepositoryImpl.loadNotice();
-            print('## notice data: ${noticData[0].content}');
-
-            var fakeNoticeRepositoryImpl = FakeNoticeRepositoryImpl();
-            var fakeNoticData = await fakeNoticeRepositoryImpl.loadNotice();
-            print('## fake notice data: ${fakeNoticData[0].content}');
-
             await _controller?.moveCamera(
               CameraUpdate.newCameraPosition(viewModel.initialCameraPosition!),
             );
