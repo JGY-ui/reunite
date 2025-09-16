@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:reunite/data/service/notice/noticeService.dart';
+import 'package:reunite/data/service/notice/NoticeService.dart';
 import 'package:reunite/ui/features/missingMap/models/model.dart';
 
 class NoticeServiceImpl implements NoticeService {
