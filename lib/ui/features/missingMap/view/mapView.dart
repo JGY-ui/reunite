@@ -5,9 +5,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:reunite/data/repository/missingPersons/fakeMissingPersonRepositoryImpl.dart';
 import 'package:reunite/data/repository/missingPersons/missingPersonRepositoryImpl.dart';
+import 'package:reunite/data/repository/notice/fakeNoticeRepositoryImpl.dart';
+import 'package:reunite/data/repository/notice/noticeRepositoryImpl.dart';
 import 'package:reunite/data/service/missingPersons/fakeMissingPersonListServiceImpl.dart';
 import 'package:reunite/data/service/missingPersons/missingPersonListServiceImpl.dart';
-import 'package:reunite/ui/features/missingList/view/listView.dart';
+import 'package:reunite/data/service/notice/fakeNoticeServiceImpl.dart';
+import 'package:reunite/data/service/notice/noticeServiceImpl.dart';
 import 'package:reunite/ui/features/missingMap/models/coordinate.dart';
 import 'package:reunite/ui/features/missingMap/viewModel/mapViewModel.dart';
 
@@ -99,32 +102,15 @@ class Mapview extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            ////////////////////////////////////////////////////////////////////
-            MissingPersonRepositoryImpl missingPersonRepositoryImpl =
-                MissingPersonRepositoryImpl(
-              service: MissingPersonsServiceImpl(), // 실제 서비스 구현체
-            );
+            /// test code for fake notice repository
+            var noticeRepositoryImpl =
+                NoticeRepositoryImpl(service: NoticeServiceImpl());
+            var noticData = await noticeRepositoryImpl.loadNotice();
+            print('## notice data: ${noticData[0].content}');
 
-            var missingPersonsList =
-                await missingPersonRepositoryImpl.loadMissingPersons(
-              address: viewModel.myCurrentLocationToString,
-            );
-
-            print('missingPersonsList: ${missingPersonsList[0].nm}');
-
-            ////////////////////////////////////////////////////////////////////
-
-            FakeMissingPersonRepositorylmpl fakeMissingPersonsServiceImpl =
-                FakeMissingPersonRepositorylmpl();
-
-            var fakeMissingPersonsList =
-                await fakeMissingPersonsServiceImpl.loadMissingPersons(
-              address: "",
-            );
-
-            print('fake missingPersonsList: ${fakeMissingPersonsList[0].nm}');
-
-            ////////////////////////////////////////////////////////////////////
+            var fakeNoticeRepositoryImpl = FakeNoticeRepositoryImpl();
+            var fakeNoticData = await fakeNoticeRepositoryImpl.loadNotice();
+            print('## fake notice data: ${fakeNoticData[0].content}');
 
             await _controller?.moveCamera(
               CameraUpdate.newCameraPosition(viewModel.initialCameraPosition!),
