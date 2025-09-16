@@ -11,6 +11,7 @@ import 'package:reunite/data/service/missingPersons/fakeMissingPersonListService
 import 'package:reunite/data/service/missingPersons/missingPersonListServiceImpl.dart';
 import 'package:reunite/data/service/notice/fakeNoticeServiceImpl.dart';
 import 'package:reunite/data/service/notice/noticeServiceImpl.dart';
+import 'package:reunite/ui/features/missingList/view/listView.dart';
 import 'package:reunite/ui/features/missingMap/models/coordinate.dart';
 import 'package:reunite/ui/features/missingMap/viewModel/mapViewModel.dart';
 
@@ -56,6 +57,7 @@ class Mapview extends StatelessWidget {
                     long: position.target.longitude));
               },
               onCameraIdle: () async {
+                print('# Camera idle at}');
                 viewModel.updateMissingMarke();
               },
             ),
