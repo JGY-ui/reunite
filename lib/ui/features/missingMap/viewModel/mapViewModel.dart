@@ -4,6 +4,7 @@ import 'package:reunite/data/repository/location/locationRepositoryImpl.dart';
 import 'package:reunite/data/service/coding/geocodingServiceImpl.dart';
 import 'package:reunite/data/service/locater/locaterServiceimpl.dart';
 import 'package:reunite/data/service/missingPersons/fakeMissingPersonListServiceImpl.dart';
+import 'package:reunite/data/service/missingPersons/missingPersonListServiceImpl.dart';
 import 'package:reunite/ui/features/missingMap/models/model.dart';
 
 enum MapViewmodelState {
@@ -13,6 +14,15 @@ enum MapViewmodelState {
 }
 
 class MapViewModel extends ChangeNotifier {
+  // 드래그 가능 여부
+  bool isDraggable = false;
+
+  setisDraggable(bool value) {
+    isDraggable = value;
+    print('# isDraggable : $isDraggable');
+    notifyListeners();
+  }
+
   // 레파지토리 설정
   final repository = LocationRepositoryImpl(
     locatorService: LocaterServiceImpl(),
@@ -26,6 +36,7 @@ class MapViewModel extends ChangeNotifier {
 
   // 주소 변수
   String address = "";
+  List<MissingPerson> missingPersonsList = [];
   // 현재 위치 변수
   Coordinate? myCurrentLocation;
   // 현재 주소 변수
@@ -59,6 +70,23 @@ class MapViewModel extends ChangeNotifier {
             myCurrentLocation?.long ?? 126.9780),
         zoom: 14.4746,
       );
+      // 페이크 실종자 명단 호출
+      FakeMissingPersonsServiceImpl fakeMissingPersonsService =
+          FakeMissingPersonsServiceImpl();
+      missingPersonsList = await fakeMissingPersonsService.loadMissingPersons(
+        address: address,
+      );
+
+      // 실제 실종자 명단 호출
+      // MissingPersonsServiceImpl missingPersonsService =
+      //     MissingPersonsServiceImpl();
+
+      // missingPersonsList = await missingPersonsService.loadMissingPersons(
+      //   address: address,
+      // );
+
+      print("# missingPersonsList : $missingPersonsList");
+
       // 상태 갱신
       state = MapViewmodelState.loaded;
       notifyListeners();
@@ -69,14 +97,26 @@ class MapViewModel extends ChangeNotifier {
   _loadMissingPersons(String address) async {
     // 주소로부터 좌표를 가져와서 해당 좌표를 중심으로 실종자 목록을 불러온다
     // 좌표를 중심으로 실종자 목록을 불러온다
-
+    
     // 실종자 명단 호출
-    FakeMissingPersonsServiceImpl fakeMissingPersonsService =
-        FakeMissingPersonsServiceImpl();
+//     FakeMissingPersonsServiceImpl fakeMissingPersonsService =
+//         FakeMissingPersonsServiceImpl();
 
-    fakeMissingPersonsList = await fakeMissingPersonsService.loadMissingPersons(
-      address: address,
-    );
+//     fakeMissingPersonsList = await fakeMissingPersonsService.loadMissingPersons(
+//       address: address,
+//     );
+    List<LatLng> missingPersonLatLngList = [];
+
+    for (MissingPerson person in missingPersonsList) {
+      if (person.occrAdres != null && person.occrAdres!.isNotEmpty) {
+        LatLng? position = await _getCoordinateFromAddress(person.occrAdres!);
+        if (position != null) {
+          print('# position : $position');
+
+          missingPersonLatLngList.add(position);
+        }
+      }
+    }
   }
 
   // 현재 위치를 가져온다

@@ -16,6 +16,9 @@ dependencies:
   build_runner: ^2.4.15
   http: ^1.4.0
   google_maps_flutter: ^2.12.3
+  sliding_up_panel: ^2.0.0+1
+  firebase_core: ^4.1.0
+  cloud_firestore: ^6.0.1
 
 dev_dependencies:
   flutter_test:
