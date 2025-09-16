@@ -44,6 +44,8 @@ class MapViewModel extends ChangeNotifier {
 
   Coordinate? currentCameraCoordinate;
 
+  List<MissingPerson> fakeMissingPersonsList = [];
+
   // List<MissingPerson> missingPersonList;
   late Map<int, Coordinate> missingPersonCoordinates;
   // 초기 카메라 위치 설정
@@ -95,6 +97,14 @@ class MapViewModel extends ChangeNotifier {
   _loadMissingPersons(String address) async {
     // 주소로부터 좌표를 가져와서 해당 좌표를 중심으로 실종자 목록을 불러온다
     // 좌표를 중심으로 실종자 목록을 불러온다
+    
+    // 실종자 명단 호출
+//     FakeMissingPersonsServiceImpl fakeMissingPersonsService =
+//         FakeMissingPersonsServiceImpl();
+
+//     fakeMissingPersonsList = await fakeMissingPersonsService.loadMissingPersons(
+//       address: address,
+//     );
     List<LatLng> missingPersonLatLngList = [];
 
     for (MissingPerson person in missingPersonsList) {
@@ -133,7 +143,29 @@ class MapViewModel extends ChangeNotifier {
     // 현재 주소를 바탕으로 실종자 목록을 불러온다
     _loadMissingPersons(myCurrentLocationToString);
 
+    List<LatLng> missingPersonLatLngList = [];
+
     markers.clear();
+
+    for (MissingPerson person in fakeMissingPersonsList) {
+      if (person.occrAdres != null && person.occrAdres!.isNotEmpty) {
+        LatLng? position = await _getCoordinateFromAddress(person.occrAdres!);
+        if (position != null) {
+          print('# position : $position');
+
+          missingPersonLatLngList.add(position);
+
+          markers.add(
+            Marker(
+              markerId: MarkerId('${person.nm ?? '실종자'}'),
+              position: position,
+              infoWindow: InfoWindow(title: '${person.nm ?? '실종자'}'),
+            ),
+          );
+        }
+      }
+    }
+
     markers.add(
       Marker(
         markerId: MarkerId('currentCameraCoordinate_location'),
@@ -142,6 +174,17 @@ class MapViewModel extends ChangeNotifier {
         infoWindow: InfoWindow(title: 'currentCameraCoordinate Location'),
       ),
     );
+    markers.add(
+      Marker(
+        markerId: MarkerId('myCurrentLocation_location'),
+        position: LatLng(myCurrentLocation!.lat, myCurrentLocation!.long),
+        infoWindow: InfoWindow(title: 'myCurrentLocation Location'),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan),
+      ),
+    );
+
+// fakeMissingPersonsList
+
     markers.add(
       Marker(
         markerId: MarkerId('myCurrentLocation_location'),
