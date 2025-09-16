@@ -38,24 +38,67 @@ class Mapview extends StatelessWidget {
       // return Text('Loaded');
       print('Loaded');
       return Scaffold(
-        body: GoogleMap(
-          mapType: MapType.normal,
-          initialCameraPosition: viewModel.initialCameraPosition!,
-          onMapCreated: (controller) {
-            _controller = controller;
-            print(
-                '# Map created with initial position: ${viewModel.initialCameraPosition}');
-          },
-          markers: viewModel.markers,
-          onCameraMove: (position) {
-            print('# Camera moved to: ${position.target}');
-            viewModel.updateMissingPersonCoordinates(Coordinate(
-                lat: position.target.latitude,
-                long: position.target.longitude));
-          },
-          onCameraIdle: () async {
-            viewModel.updateMissingMarke();
-          },
+        body: Stack(
+          children: [
+            GoogleMap(
+              mapType: MapType.normal,
+              initialCameraPosition: viewModel.initialCameraPosition!,
+              onMapCreated: (controller) {
+                _controller = controller;
+                print(
+                    '# Map created with initial position: ${viewModel.initialCameraPosition}');
+              },
+              markers: viewModel.markers,
+              onCameraMove: (position) {
+                print('# Camera moved to: ${position.target}');
+                viewModel.updateMissingPersonCoordinates(Coordinate(
+                    lat: position.target.latitude,
+                    long: position.target.longitude));
+              },
+              onCameraIdle: () async {
+                viewModel.updateMissingMarke();
+              },
+            ),
+            DraggableScrollableSheet(
+              initialChildSize: 0.1, // 처음 보이는 높이 (20%)
+              minChildSize: 0.1, // 최소 높이
+              maxChildSize: 0.8, // 최대 높이 (화면의 절반)
+              snap: true, // 스냅 활성화
+              snapSizes: const [0.1, 0.8], // 20% 또는 50%에서만 멈춤
+              builder: (context, scrollController) {
+                final sheetMaxHeight = MediaQuery.of(context).size.height * 0.5;
+                if (scrollController.hasClients) {
+                  scrollController.position.isScrollingNotifier.addListener(() {
+                    final isMax = scrollController.position.viewportDimension >=
+                        sheetMaxHeight;
+
+                    if (isMax) {
+                      viewModel.setisDraggable(true);
+                    } else {
+                      viewModel.setisDraggable(false);
+                    }
+                  });
+                }
+
+                return Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 8,
+                        offset: Offset(0, -2),
+                      ),
+                    ],
+                  ),
+                  child: MissingpersonsList(scrollController,
+                      viewModel.isDraggable, viewModel.missingPersonsList),
+                );
+              },
+            ),
+          ],
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
